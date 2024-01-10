@@ -1,11 +1,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <pthread.h>
+#include <assert.h>
 
 #define CHUNK_SIZE sizeof(heapChunk) //? defining size of one chunk
 #define ALIGNMENT 8 //? I'll align each chunk by 8 bytes
 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~(ALIGNMENT-1)) //? this is a macro for finding the next multiple of 8
 #define MAGIC_NUMBER 0x12345678 //? used for identifying the chunk
+
+pthread_mutex_t global_malloc_lock;
 
 //? this struct stores information about a single chunk
 typedef struct heapChunk
@@ -13,15 +17,17 @@ typedef struct heapChunk
     int magic;
     size_t size;
     bool isFree;
-    heapChunk *next;
+    struct heapChunk *next;
 
 } heapChunk;
 
-heapChunk *freeChunks = NULL;
+//? for storing the all chunks
+heapChunk *allChunks = NULL;
 
+//? simple linear search for finding a next free chunk
 heapChunk *findFreeChunk(heapChunk **last, size_t size)
 {
-    heapChunk *current = freeChunks;
+    heapChunk *current = allChunks;
     
     while(current && !(current->isFree && current->size >= size))
     {
@@ -49,16 +55,17 @@ void *heapAlloc(size_t size)
     if (size <= 0) return NULL;
 
     size_t totalSize;
-    heapChunk *chunk, *last;
+    heapChunk *chunk = NULL;
+    heapChunk *last = NULL;
 
-    //! Here mutex lock should be used
+    pthread_mutex_lock(&global_malloc_lock);
 
     size = ALIGN(size);
     totalSize = size + CHUNK_SIZE;
 
-    if(freeChunks)
+    if(allChunks)
     {
-        last = freeChunks;
+        last = allChunks;
         chunk = findFreeChunk(&last, size);
         if(chunk)
         {
@@ -75,7 +82,7 @@ void *heapAlloc(size_t size)
         chunk = sbrk(totalSize);
         if (chunk == (void*) -1)
         {
-            //! Here mutex unlock should be used
+            pthread_mutex_unlock(&global_malloc_lock);
             return NULL;
         }
 
@@ -90,11 +97,12 @@ void *heapAlloc(size_t size)
         }
         else
         {
-            freeChunks = chunk;
+            allChunks = chunk;
         }
     }
 
-    //! Here mutex unlock should be used
+    pthread_mutex_unlock(&global_malloc_lock);
+
     return (void*)(chunk + 1);
 }
 
@@ -108,15 +116,26 @@ void heapCollect()
     assert(false && "Not implemented yet");
 }
 
+void printAll() {
+    heapChunk *current = allChunks;
+
+    while (current != NULL) {
+        printf("Chunk at address: %p, Size: %zu, Free: %s\n", 
+               (void *)current, 
+               current->size, 
+               current->isFree ? "Yes" : "No");
+
+        current = current->next;
+    }
+}
+
 int main(void)
 {
     void *ptr = heapAlloc(5);
-    printf("ptr: %p\n", ptr);
-
     void *ptr2 = heapAlloc(5);
-    printf("ptr: %p\n", ptr2);
+    printAll();
 
-    void *ptr3 = heapAlloc(10);
-    printf("ptr: %p\n", ptr3);
+    // void *ptr3 = heapAlloc(10);
+    // printf("ptr: %p\n", ptr3);
     return 0;
 }
