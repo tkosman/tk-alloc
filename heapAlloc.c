@@ -69,6 +69,7 @@ void *heapAlloc(size_t size)
         chunk = findFreeChunk(&last, size);
         if(chunk)
         {
+                
             if(chunk->size - size >= CHUNK_SIZE + ALIGNMENT)
             {
                 splitChunk(chunk, size);
@@ -117,14 +118,15 @@ void heapMergeChunks(heapChunk *chunk)
 
 void heapFree(void* ptr)
 {
-    assert(false && "Add mutexes");
-
     if (!ptr) return;
 
     heapChunk *chunk = (heapChunk*)ptr - 1;
 
+    pthread_mutex_lock(&global_malloc_lock);
+
     if(chunk->magic != MAGIC_NUMBER)
     {
+        pthread_mutex_unlock(&global_malloc_lock);
         perror("Memory corruption");
     }
 
@@ -133,12 +135,12 @@ void heapFree(void* ptr)
     {
         heapMergeChunks(chunk);
     }
+    pthread_mutex_unlock(&global_malloc_lock);
 }
 
 
 void printAll() {
     heapChunk *current = allChunks;
-
     while (current != NULL) {
         printf("Chunk at address: %p, Size: %zu, Free: %s\n", 
                (void *)current, 
@@ -147,13 +149,23 @@ void printAll() {
 
         current = current->next;
     }
+    printf("###############################\n");
 }
 
 int main(void)
 {
+    pthread_mutex_init(&global_malloc_lock, NULL);
+
     void *ptr = heapAlloc(5);
+    void *ptr3 = heapAlloc(60);
     void *ptr2 = heapAlloc(5);
-    void *ptr3 = heapAlloc(10);
     printAll();
+    heapFree(ptr3);
+    printAll();
+    void *ptr4 = heapAlloc(5);
+    printAll();
+
+
+    pthread_mutex_destroy(&global_malloc_lock);
     return 0;
 }
