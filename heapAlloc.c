@@ -117,7 +117,22 @@ void heapMergeChunks(heapChunk *chunk)
 
 void heapFree(void* ptr)
 {
-    assert(false && "Not implemented yet");
+    assert(false && "Add mutexes");
+
+    if (!ptr) return;
+
+    heapChunk *chunk = (heapChunk*)ptr - 1;
+
+    if(chunk->magic != MAGIC_NUMBER)
+    {
+        perror("Memory corruption");
+    }
+
+    chunk->isFree = true;
+    if (chunk->next)
+    {
+        heapMergeChunks(chunk);
+    }
 }
 
 
