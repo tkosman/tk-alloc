@@ -106,15 +106,20 @@ void *heapAlloc(size_t size)
     return (void*)(chunk + 1);
 }
 
+void heapMergeChunks(heapChunk *chunk)
+{
+    while (chunk->next && chunk->next->isFree)
+    {
+        chunk->size += CHUNK_SIZE + chunk->next->size;
+        chunk->next = chunk->next->next;
+    }
+}
+
 void heapFree(void* ptr)
 {
     assert(false && "Not implemented yet");
 }
 
-void heapCollect()
-{
-    assert(false && "Not implemented yet");
-}
 
 void printAll() {
     heapChunk *current = allChunks;
@@ -133,9 +138,7 @@ int main(void)
 {
     void *ptr = heapAlloc(5);
     void *ptr2 = heapAlloc(5);
+    void *ptr3 = heapAlloc(10);
     printAll();
-
-    // void *ptr3 = heapAlloc(10);
-    // printf("ptr: %p\n", ptr3);
     return 0;
 }
