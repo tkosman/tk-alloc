@@ -31,15 +31,18 @@ analyze:
 	@mv *.gcov target/testCoverage/
 	@cd target/testCoverage && rm -rf *.gcno *.gcda
 
-
-
-
-#TODO: Yet to be implemented
-
 .PHONY:memcheck
-memcheck: test
+memcheck:
+	@valgirnd --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
+    @clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,modernize-*,performance-*,readability-* --warnings-as-errors=* ./src/*.c
+    # @scan-build --status-bugs --keep-cc --show-description make
+    @clang --analyze -Xanalyzer -analyzer-output=text ./src/*.c
+    $(CC) -fsanitize=address ./src/*.c -I./include -o target/sanitizer.out
+    # @./target/sanitizer.out
+
 	
 
+#TODO: Yet to be implemented
 .PHONY:regression
 regression:
 	$(MAKE) clean --no-print-directory
