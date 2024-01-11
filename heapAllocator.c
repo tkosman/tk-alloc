@@ -168,22 +168,33 @@ void checkForUnfreedChunks()
     }
 }
 
-void printAll()
+void fullDumpChunks()
 {
+    printf("Memory dump:\n");
+    int chunkNumber = 0;
     heapChunk *current = allChunks;
     while (current != NULL)
     {
-        printf("Chunk at address: %p, \n\tSize: %zu \n\tLine: %d \n\tFile: %s \n\tFree: %s\n", 
-                (void *)current, 
-                current->size, 
-                current->line,
-                current->file,
-                current->isFree ? "Yes" : "No");
+        printf("{CHUNK#%d start: %p end: %p, size: %zu, ", 
+                chunkNumber++,
+                (void*)current, 
+                (void*)((char*)current + current->size + CHUNK_SIZE), 
+                current->size);   
+        
+        if (!current->isFree) 
+        {
+            printf("allocated at FILE: %s, LINE: %d", 
+                   current->file, 
+                   current->line);
+        } 
+        else 
+        {
+            printf("free");
+        }
 
+        printf("}\n");
         current = current->next;
-        printf("\n");
     }
-    printf("###############################\n");
 }
 
 void printMemoryStats()

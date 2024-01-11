@@ -42,5 +42,8 @@ typedef struct {
 void heapFree(void *ptr);
 void printMemoryStats();
 void checkForUnfreedChunks();
+void fullDumpChunks();
+void *allocWithStats(size_t bytes, const char *file, int line);
+const char* extractFilename(const char *path);
 
 #endif //HEAP_ALLOCATOR_H

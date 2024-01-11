@@ -12,8 +12,8 @@ int main(void)
     void *ptr4 = heapAlloc(5);
     heapFree(ptr);
     heapFree(ptr2);
-    // heapFree(ptr4);
-    printMemoryStats();
+    heapFree(ptr4);
+    fullDumpChunks();
 
 
     pthread_mutex_destroy(&global_malloc_lock);
