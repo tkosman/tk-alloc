@@ -204,3 +204,18 @@ void printMemoryStats()
     printf("Corrupted chunks: %d\n", mem_stats.corruptedChunks);
     printf("Unfreed chunks: %d\n", mem_stats.unfreedChunks);
 }
+
+MemoryStats getMemoryStats()
+{
+    return mem_stats;
+}
+
+void resetMemoryStats()
+{
+    mem_stats.allocCalls = 0;
+    mem_stats.totalAllocated = 0;
+    mem_stats.peakMemory = 0;
+    mem_stats.sbrkCalls = 0;
+    mem_stats.corruptedChunks = 0;
+    mem_stats.unfreedChunks = 0;
+}

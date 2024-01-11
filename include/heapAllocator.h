@@ -45,5 +45,7 @@ void checkForUnfreedChunks();
 void fullDumpChunks();
 void *allocWithStats(size_t bytes, const char *file, int line);
 const char* extractFilename(const char *path);
+MemoryStats getMemoryStats();
+void resetMemoryStats();
 
 #endif //HEAP_ALLOCATOR_H
