@@ -19,9 +19,11 @@ test:
 	@mkdir -p target
 	$(CC) $(C_FLAGS) ./src/*.c ./test/*.c -I./include -o target/test.out
 	@./target/test.out
+	@echo "###############################################"
+	$(MAKE) testCoverage --no-print-directory
 
-.PHONY:analyze
-analyze: 
+.PHONY: testCoverage
+testCoverage: 
 	@mkdir -p target/testCoverage
 	@cd target/testCoverage 
 	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/test.out
@@ -31,13 +33,22 @@ analyze:
 	@mv *.gcov target/testCoverage/
 	@cd target/testCoverage && rm -rf *.gcno *.gcda
 
-.PHONY:memcheck
-memcheck:
-	@valgirnd --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
-    # @clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,modernize-*,performance-*,readability-* --warnings-as-errors=* ./src/*.c
-    # @scan-build --status-bugs --keep-cc --show-description make
-    # @clang --analyze -Xanalyzer -analyzer-output=text ./src/*.c
-    # $(CC) -fsanitize=address ./src/*.c -I./include -o target/sanitizer.out
+.PHONY:analyze
+analyze:
+#	Valgrind not for macos :0
+# 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
+
+#	Clang-tidy
+	@clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,modernize-*,performance-*,readability-* --warnings-as-errors=* ./src/*.c -- -I./include
+
+#	Scan-build
+	@scan-build --status-bugs --keep-cc --show-description make
+
+#	Clang Static Analyzer
+	@clang --analyze -Xanalyzer -analyzer-output=text -I./include ./src/*.c
+
+#TODO: Yet to be implemented
+# @clang -fsanitize=address ./src/*.c -I./include -o target/sanitizer.out
     # @./target/sanitizer.out
 
 	
