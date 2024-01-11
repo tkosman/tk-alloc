@@ -3,11 +3,14 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <assert.h>
+#include <stdlib.h> 
 
 #define CHUNK_SIZE sizeof(heapChunk) //? defining size of one chunk
 #define ALIGNMENT 8 //? I'll align each chunk by 8 bytes
 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~(ALIGNMENT-1)) //? this is a macro for finding the next multiple of 8
 #define MAGIC_NUMBER 0x12345678 //? used for identifying the chunk
+#define heapAlloc(bytes) allocWithStats(bytes, extractFilename(__FILE__), __LINE__)
+
 
 pthread_mutex_t global_malloc_lock;
 
@@ -19,7 +22,21 @@ typedef struct heapChunk
     bool isFree;
     struct heapChunk *next;
 
+    const char *file;
+    int line;
+
 } heapChunk;
+
+typedef struct {
+    int allocCalls;         
+    size_t totalAllocated;   
+    size_t peakMemory;
+    size_t sbrkCalls;
+    int corruptedChunks;
+    int unfreedChunks;
+} MemoryStats;
+
+MemoryStats mem_stats = {0};
 
 //? for storing the all chunks
 heapChunk *allChunks = NULL;
@@ -49,8 +66,13 @@ void splitChunk(heapChunk *chunk, size_t size)
     chunk->next = newChunk;
 }
 
+void *sbrkWithStats(size_t size)
+{
+    mem_stats.sbrkCalls++;
+    return sbrk(size);
+}
 
-void *heapAlloc(size_t size)
+void *myAlloc(size_t size, const char *file, int line)
 {
     if (size <= 0) return NULL;
 
@@ -80,7 +102,8 @@ void *heapAlloc(size_t size)
 
     if (!chunk)
     {
-        chunk = sbrk(totalSize);
+        chunk = sbrkWithStats(totalSize);
+
         if (chunk == (void*) -1)
         {
             pthread_mutex_unlock(&global_malloc_lock);
@@ -104,7 +127,22 @@ void *heapAlloc(size_t size)
 
     pthread_mutex_unlock(&global_malloc_lock);
 
+
+    chunk->file = file;
+    chunk->line = line;
     return (void*)(chunk + 1);
+}
+
+
+//? function extending heapAlloc to take file, line and stats
+void *allocWithStats(size_t bytes, const char *file, int line)
+{
+    mem_stats.allocCalls++;
+    mem_stats.totalAllocated += bytes;
+    if (mem_stats.totalAllocated > mem_stats.peakMemory) {
+        mem_stats.peakMemory = mem_stats.totalAllocated;
+    }
+    return myAlloc(bytes, file, line);
 }
 
 void heapMergeChunks(heapChunk *chunk)
@@ -126,6 +164,7 @@ void heapFree(void* ptr)
 
     if(chunk->magic != MAGIC_NUMBER)
     {
+        mem_stats.corruptedChunks++;
         pthread_mutex_unlock(&global_malloc_lock);
         perror("Memory corruption");
     }
@@ -138,32 +177,76 @@ void heapFree(void* ptr)
     pthread_mutex_unlock(&global_malloc_lock);
 }
 
+const char* extractFilename(const char *path)
+{
+    const char *filename = path;
+    for (const char *p = path; *p != '\0'; p++)
+    {
+        if (*p == '/' || *p == '\\')
+        {
+            filename = p + 1;
+        }
+    }
+    return filename;
+}
 
-void printAll() {
+void checkForUnfreedChunks()
+{
     heapChunk *current = allChunks;
-    while (current != NULL) {
-        printf("Chunk at address: %p, Size: %zu, Free: %s\n", 
-               (void *)current, 
-               current->size, 
-               current->isFree ? "Yes" : "No");
+    while (current)
+    {
+        if (!current->isFree)
+        {
+            mem_stats.unfreedChunks++;
+            printf("Unfreed chunk: %p, Allocator: %s, Line: %d\n", current, current->file, current->line);
+        }
+        current = current->next;
+    }
+}
+
+void printAll()
+{
+    heapChunk *current = allChunks;
+    while (current != NULL)
+    {
+        printf("Chunk at address: %p, \n\tSize: %zu \n\tLine: %d \n\tFile: %s \n\tFree: %s\n", 
+                (void *)current, 
+                current->size, 
+                current->line,
+                current->file,
+                current->isFree ? "Yes" : "No");
 
         current = current->next;
+        printf("\n");
     }
     printf("###############################\n");
 }
 
+void printMemoryStats()
+{
+    printf("Allocation calls: %d\n", mem_stats.allocCalls);
+    printf("Allocated in total: %zu bites\n", mem_stats.totalAllocated);
+    printf("Peek usage: %zu bites\n", mem_stats.peakMemory);
+    printf("Calls of sbrk: %zu\n", mem_stats.sbrkCalls);
+    printf("Corrupted chunks: %d\n", mem_stats.corruptedChunks);
+    printf("Unfreed chunks: %d\n", mem_stats.unfreedChunks);
+}
+
+
 int main(void)
 {
+    atexit(checkForUnfreedChunks);
     pthread_mutex_init(&global_malloc_lock, NULL);
 
     void *ptr = heapAlloc(5);
     void *ptr3 = heapAlloc(60);
     void *ptr2 = heapAlloc(5);
-    printAll();
     heapFree(ptr3);
-    printAll();
     void *ptr4 = heapAlloc(5);
-    printAll();
+    heapFree(ptr);
+    heapFree(ptr2);
+    // heapFree(ptr4);
+    printMemoryStats();
 
 
     pthread_mutex_destroy(&global_malloc_lock);
