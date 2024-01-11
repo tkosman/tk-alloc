@@ -15,6 +15,8 @@
 
 #define heapAlloc(bytes) allocWithStats(bytes, extractFilename(__FILE__), __LINE__)
 
+pthread_mutex_t global_malloc_lock;
+
 //? this struct stores information about a single chunk
 typedef struct heapChunk
 {
