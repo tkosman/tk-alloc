@@ -134,10 +134,8 @@ void heapFree(void* ptr)
     }
 
     chunk->isFree = true;
-    if (chunk->next)
-    {
-        heapMergeChunks(chunk);
-    }
+
+    heapMergeChunks(allChunks);
     pthread_mutex_unlock(&global_malloc_lock);
 }
 
