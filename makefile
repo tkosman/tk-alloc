@@ -1,5 +1,5 @@
 CC := gcc
-C_FLAGS := -Wall -Wextra
+C_FLAGS := -Wall -Wextra -Wno-deprecated-declarations
 
 .PHONY:all
 all:
@@ -20,12 +20,21 @@ test:
 	$(CC) $(C_FLAGS) ./src/*.c ./test/*.c -I./include -o target/test.out
 	@./target/test.out
 
-
-
-
 .PHONY:analyze
-analyze: app test
+analyze: 
+	@mkdir -p target/testCoverage
+	@cd target/testCoverage 
+	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/test.out
+	@cd target/testCoverage && ./test.out
+	@mv *.gcno *.gcda target/testCoverage/
+	@gcov -o target/testCoverage ./src/*.c
+	@mv *.gcov target/testCoverage/
+	@cd target/testCoverage && rm -rf *.gcno *.gcda
 
+
+
+
+#TODO: Yet to be implemented
 
 .PHONY:memcheck
 memcheck: test

@@ -1,15 +1,13 @@
 extern void testHeapAlloc();
 extern void testHeapFree();
+extern void testPrintMemoryStats();
 
 #include <stdio.h>
 
 int main() {
     testHeapAlloc();
     testHeapFree();
-
-    //TODO: Finish those tests.
-    // testMemoryLeak();
-    // testBlockIntegrity();
+    testPrintMemoryStats();
 
     printf("All tests succeded.\n");
     return 0;
