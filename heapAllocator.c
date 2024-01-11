@@ -9,8 +9,8 @@
 #define ALIGNMENT 8 //? I'll align each chunk by 8 bytes
 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~(ALIGNMENT-1)) //? this is a macro for finding the next multiple of 8
 #define MAGIC_NUMBER 0x12345678 //? used for identifying the chunk
-#define heapAlloc(bytes) allocWithStats(bytes, extractFilename(__FILE__), __LINE__)
 
+#define heapAlloc(bytes) allocWithStats(bytes, extractFilename(__FILE__), __LINE__)
 
 pthread_mutex_t global_malloc_lock;
 
