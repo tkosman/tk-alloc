@@ -2,5 +2,6 @@
 
 int main(void)
 {
-    heapFree(-100);
+    void *ptr = (void*) -100;
+    heapFree(ptr);
 }

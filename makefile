@@ -16,22 +16,30 @@ run:
 
 .PHONY:test
 test:
-	@mkdir -p target
-	$(CC) $(C_FLAGS) ./src/*.c ./test/*.c -I./include -o target/test.out
-	@./target/test.out
-	@echo "###############################################"
-	$(MAKE) testCoverage --no-print-directory
+	$(MAKE) unitTest --no-print-directory
+	$(MAKE) e2eTests --no-print-directory
 
-.PHONY: testCoverage
-testCoverage: 
+.PHONY: unitTest
+unitTest: 
 	@mkdir -p target/testCoverage
 	@cd target/testCoverage 
 	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/test.out
+	@echo "###############################################"
+	@echo "Unit Test Run:"
 	@cd target/testCoverage && ./test.out
+	@echo "###############################################"
+	@echo "Unit Test Coverage:"
 	@mv *.gcno *.gcda target/testCoverage/
 	@gcov -o target/testCoverage ./src/*.c
 	@mv *.gcov target/testCoverage/
 	@cd target/testCoverage && rm -rf *.gcno *.gcda
+
+.PHONY: e2eTests
+e2eTests:
+	@cd e2eTests && $(MAKE) buildLib
+	@cd e2eTests && $(MAKE) compileTests
+	@cd e2eTests && $(MAKE) runTests
+	@cd e2eTests && $(MAKE) cleanTests
 
 .PHONY:analyze
 analyze:
