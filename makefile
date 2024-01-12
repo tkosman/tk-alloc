@@ -74,3 +74,13 @@ regression:
 .PHONY:clean
 clean:
 	@rm -rf target
+
+LIB_NAME = lib-tk-alloc.a
+
+.PHONY:install
+install:
+	$(CC) ./src/*.c -c -o tk-alloc/lib
+	@cd tk-alloc/lib && ar rcs $(LIB_NAME) *.o
+
+
+
