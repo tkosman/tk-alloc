@@ -1,2 +1,5 @@
 /target
 .vscode
+/e2eTests/__pycache__
+/e2eTests/.pytest_cache
+/e2eTests/bin

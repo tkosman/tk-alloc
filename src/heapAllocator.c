@@ -120,9 +120,21 @@ void heapMergeChunks(heapChunk *chunk)
 
 void heapFree(void* ptr)
 {
-    if (!ptr) return;
+    if (!ptr)
+    {
+        printf("Freeing NULL pointer\n");
+        fflush(stdout);
+        return;
+    }
 
     heapChunk *chunk = (heapChunk*)ptr - 1;
+
+    if (chunk->isFree)
+    {
+        printf("Freeing already freed chunk\n");
+        abort();
+        return;
+    }
 
     pthread_mutex_lock(&global_malloc_lock);
 
@@ -218,4 +230,9 @@ void resetMemoryStats()
     mem_stats.sbrkCalls = 0;
     mem_stats.corruptedChunks = 0;
     mem_stats.unfreedChunks = 0;
+}
+
+void *heapAlloc(size_t bytes)
+{
+    return heapAllocMacro(bytes);
 }
