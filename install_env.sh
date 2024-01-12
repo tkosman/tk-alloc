@@ -10,17 +10,14 @@ source detect_distribution.sh
 $PKG_UPDATE
 
 # Install needed packages
-$PKG_INSTALL    build-essential \
-                gcc \
+$PKG_INSTALL    gcc \
                 make \
                 valgrind \
                 clang-tidy \
-                scan-build \
                 clang
 
 # Install python and packages
 $PKG_INSTALL python3
 pip install ctype \
-            subprocess \
             pytest
 
