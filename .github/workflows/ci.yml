@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc]
+        compiler: [gcc, clang]
         flags: ['-ggdb3', '-O3']
     runs-on: ubuntu-latest
 
