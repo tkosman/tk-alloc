@@ -64,17 +64,12 @@ analyze:
 # @clang -fsanitize=address ./src/*.c -I./include -o target/sanitizer.out
     # @./target/sanitizer.out
 
-	
-
-#TODO: Yet to be implemented
-# .PHONY:regression
-# regression:
-# 	$(MAKE) clean --no-print-directory
-# 	$(MAKE) app --no-print-directory
-# 	$(MAKE) test --no-print-directory
-# 	$(MAKE) analyze --no-print-directory
-# 	./test.out
-# 	$(MAKE) memcheck --no-print-directory
+.PHONY:regression
+regression:
+	$(MAKE) clean --no-print-directory
+	$(MAKE) build --no-print-directory
+	$(MAKE) test --no-print-directory
+	$(MAKE) analyze --no-print-directory
 
 .PHONY:clean
 clean:
