@@ -20,47 +20,47 @@ test:
 	$(MAKE) e2eTests --no-print-directory
 
 # MACOS VERSION
-.PHONY: unitTest
-unitTest: 
-	@mkdir -p target/testCoverage
-	@cd target/testCoverage 
-	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/test.out
-	@echo "###############################################"
-	@echo "Unit Test Run:"
-	@cd target/testCoverage && ./test.out
-	@echo "###############################################"
-	@echo "Unit Test Coverage:"
-	@mv *.gcno *.gcda target/testCoverage/
-	@gcov -o target/testCoverage ./src/*.c
-	@mv *.gcov target/testCoverage/
-	@cd target/testCoverage && rm -rf *.gcno *.gcda
-
-# LINUX VERSION
 # .PHONY: unitTest
 # unitTest: 
-# 	@mkdir -p target/test
 # 	@mkdir -p target/testCoverage
-# 	$(CC) $(C_FLAGS) ./src/*.c ./test/*.c -I./include -o target/test/test.out
+# 	@cd target/testCoverage 
+# 	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/test.out
 # 	@echo "###############################################"
 # 	@echo "Unit Test Run:"
-# 	@cd target/test && ./test.out
+# 	@cd target/testCoverage && ./test.out
 # 	@echo "###############################################"
-# 	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/a.out
-# 	@cd target/testCoverage && ./a.out
 # 	@echo "Unit Test Coverage:"
-	
-# #	FIX FOR GCOV LINUX BUG
-# 	@for file in target/testCoverage/a-*.gcno; do \
-# 		newfile=$${file#target/testCoverage/a-}; \
-# 		mv "$$file" "target/testCoverage/$$newfile"; \
-# 	done
-# 	@for file in target/testCoverage/a-*.gcda; do \
-# 		newfile=$${file#target/testCoverage/a-}; \
-# 		mv "$$file" "target/testCoverage/$$newfile"; \
-# 	done
+# 	@mv *.gcno *.gcda target/testCoverage/
 # 	@gcov -o target/testCoverage ./src/*.c
 # 	@mv *.gcov target/testCoverage/
-# 	@cd target/testCoverage && rm -rf *.gcno *.gcda a.out
+# 	@cd target/testCoverage && rm -rf *.gcno *.gcda
+
+# LINUX VERSION
+.PHONY: unitTest
+unitTest: 
+	@mkdir -p target/test
+	@mkdir -p target/testCoverage
+	$(CC) $(C_FLAGS) ./src/*.c ./test/*.c -I./include -o target/test/test.out
+	@echo "###############################################"
+	@echo "Unit Test Run:"
+	@cd target/test && ./test.out
+	@echo "###############################################"
+	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/a.out
+	@cd target/testCoverage && ./a.out
+	@echo "Unit Test Coverage:"
+	
+#	FIX FOR GCOV LINUX BUG
+	@for file in target/testCoverage/a-*.gcno; do \
+		newfile=$${file#target/testCoverage/a-}; \
+		mv "$$file" "target/testCoverage/$$newfile"; \
+	done
+	@for file in target/testCoverage/a-*.gcda; do \
+		newfile=$${file#target/testCoverage/a-}; \
+		mv "$$file" "target/testCoverage/$$newfile"; \
+	done
+	@gcov -o target/testCoverage ./src/*.c
+	@mv *.gcov target/testCoverage/
+	@cd target/testCoverage && rm -rf *.gcno *.gcda a.out
 
 .PHONY: e2eTests
 e2eTests:
