@@ -213,7 +213,7 @@ void printMemoryStats()
 {
     printf("Allocation calls: %d\n", mem_stats.allocCalls);
     printf("Allocated in total: %zu bites\n", mem_stats.totalAllocated);
-    printf("Peek usage: %zu bites\n", mem_stats.peakMemory);
+    printf("Peek usage: %zu bytes\n", mem_stats.peakMemory);
     printf("Calls of sbrk: %zu\n", mem_stats.sbrkCalls);
     printf("Corrupted chunks: %d\n", mem_stats.corruptedChunks);
     printf("Unfreed chunks: %d\n", mem_stats.unfreedChunks);
