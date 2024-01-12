@@ -72,16 +72,16 @@ e2eTests:
 .PHONY:analyze
 analyze:
 #	Valgrind not for macos :0
-#	@echo "############ VALGRIND ############"
-# 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
+	@echo "############ VALGRIND ############"
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
 
 #	Clang-tidy
 	@echo "############ CLANG-TIDY ############"
 	@clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,-misc-include-cleaner,modernize-*,performance-*,readability-*,-clang-diagnostic-deprecated-declarations --warnings-as-errors=* ./src/*.c -- -I./include
 
 #	Scan-build
-	@echo "\n############ SCAN-BUILD ############"
-	@scan-build --status-bugs --keep-cc --show-description make
+# @echo "\n############ SCAN-BUILD ############"
+# @scan-build --status-bugs --keep-cc --show-description make
 
 #	Clang Static Analyzer
 	@echo "\n############ CLANG STATIC ANALYZER ############"
