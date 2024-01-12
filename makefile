@@ -79,8 +79,9 @@ LIB_NAME = lib-tk-alloc.a
 
 .PHONY:install
 install:
-	$(CC) ./src/*.c -c -o tk-alloc/lib
-	@cd tk-alloc/lib && ar rcs $(LIB_NAME) *.o
+	$(CC) ./src/*.c -c -I./include -o ./lib/heapAllocator.o
+	@cd lib && ar rcs $(LIB_NAME) *.o
+	@rm -rf ./lib/*.o
 
 
-
+# gcc -I./includ ./app/*.c -L./lib -l-tk-alloc -o target/app.out
