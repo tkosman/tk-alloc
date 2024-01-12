@@ -33,12 +33,12 @@ void splitChunk(heapChunk *chunk, size_t size)
 void *sbrkWithStats(size_t size)
 {
     mem_stats.sbrkCalls++;
-    return sbrk(size);
+    return sbrk((int)size);
 }
 
 void *myAlloc(size_t size, const char *file, int line)
 {
-    if (size <= 0) return NULL;
+    if (size <= 0) { return NULL; }
 
     size_t totalSize;
     heapChunk *chunk = NULL;
@@ -68,9 +68,10 @@ void *myAlloc(size_t size, const char *file, int line)
     {
         chunk = sbrkWithStats(totalSize);
 
-        if (chunk == (void*) -1)
+        if (errno == ENOMEM)
         {
             pthread_mutex_unlock(&global_malloc_lock);
+            perror("sbrk failed");
             return NULL;
         }
 
@@ -123,7 +124,6 @@ void heapFree(void* ptr)
     if (!ptr)
     {
         printf("Freeing NULL pointer\n");
-        fflush(stdout);
         return;
     }
 
@@ -154,11 +154,11 @@ void heapFree(void* ptr)
 const char* extractFilename(const char *path)
 {
     const char *filename = path;
-    for (const char *p = path; *p != '\0'; p++)
+    for (const char *pth = path; *pth != '\0'; pth++)
     {
-        if (*p == '/' || *p == '\\')
+        if (*pth == '/' || *pth == '\\')
         {
-            filename = p + 1;
+            filename = pth + 1;
         }
     }
     return filename;

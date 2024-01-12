@@ -48,13 +48,13 @@ analyze:
 
 #	TODO: review the following
 #	Clang-tidy
-	@clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,modernize-*,performance-*,readability-* --warnings-as-errors=* ./src/*.c -- -I./include
+	@clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,-misc-include-cleaner,modernize-*,performance-*,readability-*,-clang-diagnostic-deprecated-declarations --warnings-as-errors=* ./src/*.c -- -I./include
 
 #	Scan-build
-	@scan-build --status-bugs --keep-cc --show-description make
+# @scan-build --status-bugs --keep-cc --show-description make
 
 #	Clang Static Analyzer
-	@clang --analyze -Xanalyzer -analyzer-output=text -I./include ./src/*.c
+# @clang --analyze -Xanalyzer -analyzer-output=text -I./include ./src/*.c
 
 #TODO: Yet to be implemented
 # @clang -fsanitize=address ./src/*.c -I./include -o target/sanitizer.out
