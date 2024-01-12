@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc]
+        flags: ['-ggdb3', '-O3']
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install environment
+      run: |
+        sudo chmod +x ./install_env.sh
+        sudo ./install_env.sh
+
+    - name: Build with ${{ matrix.compiler }} and flags ${{ matrix.flags }}
+      env:
+        CC: ${{ matrix.compiler }}
+        CFLAGS: ${{ matrix.flags }}
+      run: |
+        make build
+        make app
+        make test
+        make analyze
