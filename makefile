@@ -38,6 +38,7 @@ analyze:
 #	Valgrind not for macos :0
 # 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
 
+#	TODO: review the following
 #	Clang-tidy
 	@clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,modernize-*,performance-*,readability-* --warnings-as-errors=* ./src/*.c -- -I./include
 
@@ -54,14 +55,14 @@ analyze:
 	
 
 #TODO: Yet to be implemented
-.PHONY:regression
-regression:
-	$(MAKE) clean --no-print-directory
-	$(MAKE) app --no-print-directory
-	$(MAKE) test --no-print-directory
-	$(MAKE) analyze --no-print-directory
-	./test.out
-	$(MAKE) memcheck --no-print-directory
+# .PHONY:regression
+# regression:
+# 	$(MAKE) clean --no-print-directory
+# 	$(MAKE) app --no-print-directory
+# 	$(MAKE) test --no-print-directory
+# 	$(MAKE) analyze --no-print-directory
+# 	./test.out
+# 	$(MAKE) memcheck --no-print-directory
 
 .PHONY:clean
 clean:
