@@ -5,6 +5,8 @@ MemoryStats mem_stats = {0};
 //? for storing the all chunks
 heapChunk *allChunks = NULL;
 
+pthread_mutex_t global_malloc_lock;
+
 //? simple linear search for finding a next free chunk
 heapChunk *findFreeChunk(heapChunk **last, size_t size)
 {

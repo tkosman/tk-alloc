@@ -18,7 +18,7 @@
 #define heapAllocMacro(bytes) allocWithStats(bytes, extractFilename(__FILE__), __LINE__)
 
 //TODO: Repair to extern
-pthread_mutex_t global_malloc_lock;
+extern pthread_mutex_t global_malloc_lock;
 
 //? this struct stores information about a single chunk
 typedef struct heapChunk
