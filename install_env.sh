@@ -15,7 +15,8 @@ $PKG_INSTALL    gcc \
                 make \
                 valgrind \
                 clang-tidy \
-                clang
+                clang \
+                clang-tools
 
 # Install python and packages
 $PKG_INSTALL python3

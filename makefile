@@ -86,8 +86,8 @@ analyze:
 	@clang-tidy --quiet -checks=bugprone-*,-bugprone-easily-swappable-parameters,clang-analyzer-*,cert-*,concurrency-*,misc-*,-misc-include-cleaner,modernize-*,performance-*,readability-*,-clang-diagnostic-deprecated-declarations --warnings-as-errors=* ./src/*.c -- -I./include
 
 #	Scan-build
-# @echo "\n############ SCAN-BUILD ############"
-# @scan-build --status-bugs --keep-cc --show-description make
+	@echo "\n############ SCAN-BUILD ############"
+	@scan-build --status-bugs --keep-cc --show-description make
 
 #	Clang Static Analyzer
 	@echo "\n############ CLANG STATIC ANALYZER ############"
