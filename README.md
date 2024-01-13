@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
- <img src="img/tk-alloc" alt="Heap allocator" width="200"></a>
+ <img src="img/tk-alloc.png" alt="Heap allocator" width="200"></a>
   <br>
   Heap Allocator by tkosman
   <br>
