@@ -19,6 +19,7 @@ run:
 test:
 	$(MAKE) unitTest --no-print-directory
 	$(MAKE) e2eTests --no-print-directory
+	$(MAKE) testCoverage --no-print-directory
 
 .PHONY: unitTest
 unitTest: 
