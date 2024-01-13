@@ -1,6 +1,6 @@
 CC ?= gcc
 FLAGS ?= -Wall
-C_FLAGS := -Wall -Wextra -Wno-deprecated-declarations $(FLAGS)
+C_FLAGS := -Wall -Wextra -Wno-deprecated-declarations -gdwarf-4 $(FLAGS)
 
 .PHONY:all
 all:
@@ -79,7 +79,7 @@ testCoverage:
 analyze:
 #	Valgrind not for macos :0
 	@echo "############ VALGRIND ############"
-# @valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --trace-children=yes --error-exitcode=1 ./target/app.out
 
 #	Clang-tidy
 	@echo "############ CLANG-TIDY ############"
