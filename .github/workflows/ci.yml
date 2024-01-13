@@ -22,7 +22,7 @@ jobs:
     - name: Build with ${{ matrix.compiler }} and flags ${{ matrix.flags }}
       env:
         CC: ${{ matrix.compiler }}
-        CFLAGS: ${{ matrix.flags }}
+        FLAGS: ${{ matrix.flags }}
       run: |
         make build
         make app

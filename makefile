@@ -1,5 +1,6 @@
-CC := gcc
-C_FLAGS := -Wall -Wextra -Wno-deprecated-declarations
+CC ?= gcc
+FLAGS ?= -Wall
+C_FLAGS := -Wall -Wextra -Wno-deprecated-declarations $(FLAGS)
 
 .PHONY:all
 all:
