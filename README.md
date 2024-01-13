@@ -62,7 +62,7 @@ If a `tk-alloc` folder already exists in the destination, the script will ask wh
 
 To run both unit and e2e tests, run the following command:
 
-```bash
+```makefile
   make test
 ```
 
