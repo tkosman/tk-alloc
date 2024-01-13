@@ -38,25 +38,9 @@ e2eTests:
 	@cd e2eTests && $(MAKE) runTests
 	@cd e2eTests && $(MAKE) cleanTests
 
-# MACOS VERSION
-.PHONY: testCoverageMacos
-testCoverageMacos: 
-	@mkdir -p target/testCoverage
-	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/test.out
-	@cd target/testCoverage && ./test.out
-	@echo "###############################################"
-	@echo "Unit Test Coverage:"
-	@sh -c 'if ls *.gcno 1> /dev/null 2>&1; then mv *.gcno target/testCoverage/; fi'
-	@sh -c 'if ls *.gcda 1> /dev/null 2>&1; then mv *.gcda target/testCoverage/; fi'
-	@gcov -o target/testCoverage ./src/*.c
-	@mv *.gcov target/testCoverage/
-	@cd target/testCoverage && rm -rf *.gcno *.gcda test.out
-	@echo "###############################################"
-
-# LINUX VERSION
 .PHONY: testCoverage
 testCoverage:
-	$(CC) $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/a.out
+	gcc $(C_FLAGS) -fprofile-arcs -ftest-coverage ./src/*.c ./test/*.c -I./include -o target/testCoverage/a.out
 	@cd target/testCoverage && ./a.out
 	@echo "Unit Test Coverage:"
 #	FIX FOR GCOV LINUX BUG
@@ -72,6 +56,9 @@ testCoverage:
 			mv "$$file" "target/testCoverage/$$newfile"; \
 		done; \
 	fi'
+	@sh -c 'if ls *.gcno 1> /dev/null 2>&1; then mv *.gcno target/testCoverage/; fi'
+	@sh -c 'if ls *.gcda 1> /dev/null 2>&1; then mv *.gcda target/testCoverage/; fi'
+#	END FIX	
 	@gcov -o target/testCoverage ./src/*.c
 	@mv *.gcov target/testCoverage/
 	@cd target/testCoverage && rm -rf *.gcno *.gcda a.out
