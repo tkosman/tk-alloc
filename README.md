@@ -6,9 +6,13 @@
   <br>
 </h2>
 
-![example workflow](https://github.com/tkosman/tk-alloc/actions/workflows/ci.yml/badge.svg)
-  
+<div align="center">
 
+   <a href=""> ![example workflow](https://github.com/tkosman/tk-alloc/actions/workflows/ci.yml/badge.svg) </a>
+   <a href=""> ![GitHub top language](https://img.shields.io/github/languages/top/tkosman/tk-alloc) </a>
+   <a href=""> ![GitHub language count](https://img.shields.io/github/languages/count/tkosman/tk-alloc) </a>
+   
+</div>
 
 ## Installation
 
@@ -20,10 +24,10 @@ First, clone the repository:
 ```
 Next, execute the installation script and specify your desired destination folder:
 ```bash
-  ./install_lib.sh <destination_folder>
+  ./install_lib.sh {DESTINATION_FOLDER}
 ```
 During the installation process, you will be prompted to confirm the installation of required packages:
-```bash
+```
 Do you want to install all necessary packages for the lib? (y/n)
 ``` 
 Please note that you will need to enter your sudo password if agreed.
