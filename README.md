@@ -6,4 +6,4 @@
   <br>
 </h1>
 
-![example workflow](https://github.com/tkosman/my-mem-alloc/actions/workflows/ci.yml/badge.svg)
+![example workflow](https://github.com/tkosman/tk-alloc/actions/workflows/ci.yml/badge.svg)
