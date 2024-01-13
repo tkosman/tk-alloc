@@ -105,6 +105,3 @@ install:
 	$(CC) $(C_FLAGS) ./src/*.c -c -I./include -o ./lib/heapAllocator.o
 	@cd lib && ar rcs $(LIB_NAME) *.o
 	@rm -rf ./lib/*.o
-
-
-# gcc -I./includ ./app/*.c -L./lib -l-tk-alloc -o target/app.out
