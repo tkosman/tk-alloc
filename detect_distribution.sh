@@ -13,6 +13,15 @@ detect_distro() {
     elif [ -f /etc/SuSE-release ]; then
         PKG_UPDATE="zypper refresh"
         PKG_INSTALL="zypper install"
+    elif [ "$(uname)" = "Darwin" ]; then
+        # Check if Homebrew is installed
+        if ! command -v brew &> /dev/null; then
+            echo "Homebrew not found. Installing Homebrew..."
+            # Installing Homebrew
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        PKG_UPDATE="brew update"
+        PKG_INSTALL="brew install"
     else
         echo "Unsupported Linux distribution."
         exit 1
