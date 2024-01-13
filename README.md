@@ -6,9 +6,8 @@
   <br>
 </h2>
 
-<p align="center">
-  ![example workflow](https://github.com/tkosman/tk-alloc/actions/workflows/ci.yml/badge.svg)
-</p>
+![example workflow](https://github.com/tkosman/tk-alloc/actions/workflows/ci.yml/badge.svg)
+  
 
 
 ## Installation
